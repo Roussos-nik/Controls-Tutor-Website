@@ -13,6 +13,7 @@ Most "AI tutors" are a generic chat window: they answer about control theory in 
 Build a plant, design a controller, watch the step response, Bode plot, pole-zero map, and root locus update in real time — then ask the tutor to help you do better.
 
 ## Screenshots - To Add
+<img width="1917" height="864" alt="image" src="https://github.com/user-attachments/assets/56134666-47db-4e43-81a3-d025a441ef99" />
 
 
 | Dashboard | Tutor (state-grounded) | Guided exercise |
