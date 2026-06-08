@@ -2,7 +2,7 @@
 
 An interactive classical-control simulator with an AI tutor that coaches you on **your** system.
 
-**Live demo:** _(coming soon)_
+**Live demo:** (https://www.loom.com/share/8f1e04d9bb79493a8f847ced64ead5b9)
 
 ---
 
