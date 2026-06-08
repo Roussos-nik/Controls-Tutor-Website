@@ -1,0 +1,770 @@
+[
+  {
+    "id": "S1",
+    "title": "Diagnose overshoot",
+    "simState": {
+      "schema": "controls-sim/v1",
+      "plant": {
+        "type": "dcMotor",
+        "name": "DC Motor",
+        "params": {
+          "K": 1,
+          "tau": 0.5
+        },
+        "transferFunction": "(1) / (0.5 s^2 + s)"
+      },
+      "controller": {
+        "type": "pid",
+        "name": "PID",
+        "params": {
+          "Kp": 10,
+          "Ki": 2,
+          "Kd": 1,
+          "N": 100
+        },
+        "transferFunction": "(110 s^2 + 1002 s + 200) / (s^2 + 100 s)"
+      },
+      "closedLoop": {
+        "transferFunction": "(110 s^2 + 1002 s + 200) / (0.5 s^4 + 51 s^3 + 210 s^2 + 1002 s + 200)",
+        "stable": true,
+        "poles": [
+          {
+            "re": -97.919,
+            "im": 0
+          },
+          {
+            "re": -1.936,
+            "im": 3.984
+          },
+          {
+            "re": -0.208,
+            "im": 0
+          },
+          {
+            "re": -1.936,
+            "im": -3.984
+          }
+        ],
+        "zeros": [
+          {
+            "re": -0.204,
+            "im": 0
+          },
+          {
+            "re": -8.905,
+            "im": 0
+          }
+        ],
+        "summary": "4 closed-loop poles, all in the left-half plane \u2192 STABLE. real pole at -0.21; complex pair at -1.94 \u00b1 3.98j (\u03c9n\u22484.43 rad/s, \u03b6\u22480.44); real pole at -97.92."
+      },
+      "metrics": {
+        "phaseMargin_deg": 45.6,
+        "gainMargin_dB": null,
+        "bandwidth_radps": 6.607,
+        "overshoot_pct": 27.4,
+        "settlingTime_s": 2.48,
+        "steadyStateError": 0
+      },
+      "notes": "Unity negative feedback assumed. Closed loop = C\u00b7G/(1+C\u00b7G). A null metric means it is undefined for this system (e.g. infinite gain margin when phase never reaches -180\u00b0, or time-domain metrics for an unstable loop). steadyStateError is the fraction error to a unit step."
+    },
+    "userMessage": "Why is my system overshooting so much?",
+    "rubric": {
+      "criteria": [
+        "References the actual overshoot value (around 27%)",
+        "Attributes overshoot to the lightly-damped dominant complex pole pair / low damping ratio",
+        "Explains intuitively (poles near the imaginary axis cause ringing), not via raw formulas",
+        "Grounds the answer in the student's actual pole locations or zeta"
+      ],
+      "notes": "Intuition-first. Must not just dump the second-order overshoot formula."
+    }
+  },
+  {
+    "id": "S2",
+    "title": "Suggest gains (tool use)",
+    "simState": {
+      "schema": "controls-sim/v1",
+      "plant": {
+        "type": "dcMotor",
+        "name": "DC Motor",
+        "params": {
+          "K": 1,
+          "tau": 0.5
+        },
+        "transferFunction": "(1) / (0.5 s^2 + s)"
+      },
+      "controller": {
+        "type": "pid",
+        "name": "PID",
+        "params": {
+          "Kp": 10,
+          "Ki": 2,
+          "Kd": 1,
+          "N": 100
+        },
+        "transferFunction": "(110 s^2 + 1002 s + 200) / (s^2 + 100 s)"
+      },
+      "closedLoop": {
+        "transferFunction": "(110 s^2 + 1002 s + 200) / (0.5 s^4 + 51 s^3 + 210 s^2 + 1002 s + 200)",
+        "stable": true,
+        "poles": [
+          {
+            "re": -97.919,
+            "im": 0
+          },
+          {
+            "re": -1.936,
+            "im": 3.984
+          },
+          {
+            "re": -0.208,
+            "im": 0
+          },
+          {
+            "re": -1.936,
+            "im": -3.984
+          }
+        ],
+        "zeros": [
+          {
+            "re": -0.204,
+            "im": 0
+          },
+          {
+            "re": -8.905,
+            "im": 0
+          }
+        ],
+        "summary": "4 closed-loop poles, all in the left-half plane \u2192 STABLE. real pole at -0.21; complex pair at -1.94 \u00b1 3.98j (\u03c9n\u22484.43 rad/s, \u03b6\u22480.44); real pole at -97.92."
+      },
+      "metrics": {
+        "phaseMargin_deg": 45.6,
+        "gainMargin_dB": null,
+        "bandwidth_radps": 6.607,
+        "overshoot_pct": 27.4,
+        "settlingTime_s": 2.48,
+        "steadyStateError": 0
+      },
+      "notes": "Unity negative feedback assumed. Closed loop = C\u00b7G/(1+C\u00b7G). A null metric means it is undefined for this system (e.g. infinite gain margin when phase never reaches -180\u00b0, or time-domain metrics for an unstable loop). steadyStateError is the fraction error to a unit step."
+    },
+    "userMessage": "Suggest specific gain values to cut the overshoot.",
+    "rubric": {
+      "criteria": [
+        "Uses the apply_gains tool with concrete numeric values",
+        "The suggested change should reduce overshoot (lower Kp and/or higher Kd)",
+        "Provides reasoning tied to damping / pole locations",
+        "Explains the intuition in text alongside the tool call"
+      ],
+      "expectsTool": true,
+      "notes": "A purely textual answer with no apply_gains tool call should score lower."
+    }
+  },
+  {
+    "id": "S3",
+    "title": "Detect instability",
+    "simState": {
+      "schema": "controls-sim/v1",
+      "plant": {
+        "type": "invertedPendulum",
+        "name": "Inverted Pendulum",
+        "params": {
+          "m": 1,
+          "l": 1,
+          "g": 9.81,
+          "J": 1
+        },
+        "transferFunction": "(1) / (s^2 - 9.81)"
+      },
+      "controller": {
+        "type": "pid",
+        "name": "PID",
+        "params": {
+          "Kp": 1,
+          "Ki": 0,
+          "Kd": 0,
+          "N": 100
+        },
+        "transferFunction": "(s^2 + 100 s) / (s^2 + 100 s)"
+      },
+      "closedLoop": {
+        "transferFunction": "(s^2 + 100 s) / (s^4 + 100 s^3 - 8.81 s^2 - 881 s)",
+        "stable": false,
+        "poles": [
+          {
+            "re": 2.968,
+            "im": 0
+          },
+          {
+            "re": 0,
+            "im": 0
+          },
+          {
+            "re": -100,
+            "im": 0
+          },
+          {
+            "re": -2.968,
+            "im": 0
+          }
+        ],
+        "zeros": [
+          {
+            "re": 0,
+            "im": 0
+          },
+          {
+            "re": -100,
+            "im": 0
+          }
+        ],
+        "summary": "4 closed-loop poles, 1 in the right-half plane \u2192 UNSTABLE. real pole at 2.97; real pole at 0; real pole at -2.97; real pole at -100."
+      },
+      "metrics": {
+        "phaseMargin_deg": null,
+        "gainMargin_dB": 19.8,
+        "bandwidth_radps": 1.28,
+        "overshoot_pct": null,
+        "settlingTime_s": null,
+        "steadyStateError": null
+      },
+      "notes": "Unity negative feedback assumed. Closed loop = C\u00b7G/(1+C\u00b7G). A null metric means it is undefined for this system (e.g. infinite gain margin when phase never reaches -180\u00b0, or time-domain metrics for an unstable loop). steadyStateError is the fraction error to a unit step."
+    },
+    "userMessage": "Is my controller stabilizing the pendulum?",
+    "rubric": {
+      "criteria": [
+        "Correctly identifies the closed loop as UNSTABLE",
+        "Mentions the right-half-plane (positive real part) pole",
+        "Explains that pure proportional control is insufficient here (needs more gain and/or derivative action)",
+        "Does NOT falsely reassure the student that it is fine"
+      ],
+      "notes": "Failing to catch the instability is an automatic low score."
+    }
+  },
+  {
+    "id": "S4",
+    "title": "Diagnose slow response",
+    "simState": {
+      "schema": "controls-sim/v1",
+      "plant": {
+        "type": "cruiseControl",
+        "name": "Cruise Control",
+        "params": {
+          "K": 10,
+          "tau": 10
+        },
+        "transferFunction": "(10) / (10 s + 1)"
+      },
+      "controller": {
+        "type": "pid",
+        "name": "PID",
+        "params": {
+          "Kp": 0.5,
+          "Ki": 0.1,
+          "Kd": 0,
+          "N": 100
+        },
+        "transferFunction": "(0.5 s^2 + 50.1 s + 10) / (s^2 + 100 s)"
+      },
+      "closedLoop": {
+        "transferFunction": "(5 s^2 + 501 s + 100) / (10 s^3 + 1006 s^2 + 601 s + 100)",
+        "stable": true,
+        "poles": [
+          {
+            "re": -100,
+            "im": 0
+          },
+          {
+            "re": -0.3,
+            "im": -0.1
+          },
+          {
+            "re": -0.3,
+            "im": 0.1
+          }
+        ],
+        "zeros": [
+          {
+            "re": -0.2,
+            "im": 0
+          },
+          {
+            "re": -100,
+            "im": 0
+          }
+        ],
+        "summary": "3 closed-loop poles, all in the left-half plane \u2192 STABLE. complex pair at -0.3 \u00b1 0.1j (\u03c9n\u22480.32 rad/s, \u03b6\u22480.95); real pole at -100."
+      },
+      "metrics": {
+        "phaseMargin_deg": 79.9,
+        "gainMargin_dB": null,
+        "bandwidth_radps": 0.605,
+        "overshoot_pct": 6.7,
+        "settlingTime_s": 15.28,
+        "steadyStateError": 0
+      },
+      "notes": "Unity negative feedback assumed. Closed loop = C\u00b7G/(1+C\u00b7G). A null metric means it is undefined for this system (e.g. infinite gain margin when phase never reaches -180\u00b0, or time-domain metrics for an unstable loop). steadyStateError is the fraction error to a unit step."
+    },
+    "userMessage": "Why does my system respond so slowly?",
+    "rubric": {
+      "criteria": [
+        "References the low bandwidth and/or large settling time",
+        "Relates the slowness to a dominant pole near the origin / large time constant",
+        "Suggests an action to speed it up (e.g. increase gain)",
+        "Intuition-first explanation"
+      ]
+    }
+  },
+  {
+    "id": "S5",
+    "title": "Evaluate a design",
+    "simState": {
+      "schema": "controls-sim/v1",
+      "plant": {
+        "type": "dcMotor",
+        "name": "DC Motor",
+        "params": {
+          "K": 1,
+          "tau": 0.5
+        },
+        "transferFunction": "(1) / (0.5 s^2 + s)"
+      },
+      "controller": {
+        "type": "pid",
+        "name": "PID",
+        "params": {
+          "Kp": 3,
+          "Ki": 1,
+          "Kd": 1.5,
+          "N": 100
+        },
+        "transferFunction": "(153 s^2 + 301 s + 100) / (s^2 + 100 s)"
+      },
+      "closedLoop": {
+        "transferFunction": "(153 s^2 + 301 s + 100) / (0.5 s^4 + 51 s^3 + 253 s^2 + 301 s + 100)",
+        "stable": true,
+        "poles": [
+          {
+            "re": -96.839,
+            "im": 0
+          },
+          {
+            "re": -0.971,
+            "im": 0
+          },
+          {
+            "re": -3.599,
+            "im": 0
+          },
+          {
+            "re": -0.591,
+            "im": 0
+          }
+        ],
+        "zeros": [
+          {
+            "re": -0.423,
+            "im": 0
+          },
+          {
+            "re": -1.544,
+            "im": 0
+          }
+        ],
+        "summary": "4 closed-loop poles, all in the left-half plane \u2192 STABLE. real pole at -0.59; real pole at -0.97; real pole at -3.6; real pole at -96.84."
+      },
+      "metrics": {
+        "phaseMargin_deg": 86.6,
+        "gainMargin_dB": null,
+        "bandwidth_radps": 3.055,
+        "overshoot_pct": 8.3,
+        "settlingTime_s": 5.88,
+        "steadyStateError": 0
+      },
+      "notes": "Unity negative feedback assumed. Closed loop = C\u00b7G/(1+C\u00b7G). A null metric means it is undefined for this system (e.g. infinite gain margin when phase never reaches -180\u00b0, or time-domain metrics for an unstable loop). steadyStateError is the fraction error to a unit step."
+    },
+    "userMessage": "Is this a solid design, or should I change something?",
+    "rubric": {
+      "criteria": [
+        "References the actual phase margin value",
+        "Gives a balanced assessment (acknowledges strengths, notes any tradeoff)",
+        "Asks a guiding question or invites the student to reason",
+        "Avoids both empty over-praise and unwarranted harshness"
+      ]
+    }
+  },
+  {
+    "id": "S6",
+    "title": "Explain steady-state error",
+    "simState": {
+      "schema": "controls-sim/v1",
+      "plant": {
+        "type": "massSpringDamper",
+        "name": "Mass-Spring-Damper",
+        "params": {
+          "m": 1,
+          "b": 0.5,
+          "k": 4
+        },
+        "transferFunction": "(1) / (s^2 + 0.5 s + 4)"
+      },
+      "controller": {
+        "type": "leadLag",
+        "name": "Lead/Lag",
+        "params": {
+          "K": 5,
+          "z": 1,
+          "p": 1
+        },
+        "transferFunction": "(5 s + 5) / (s + 1)"
+      },
+      "closedLoop": {
+        "transferFunction": "(5 s + 5) / (s^3 + 1.5 s^2 + 9.5 s + 9)",
+        "stable": true,
+        "poles": [
+          {
+            "re": -1,
+            "im": 0
+          },
+          {
+            "re": -0.25,
+            "im": 2.99
+          },
+          {
+            "re": -0.25,
+            "im": -2.99
+          }
+        ],
+        "zeros": [
+          {
+            "re": -1,
+            "im": 0
+          }
+        ],
+        "summary": "3 closed-loop poles, all in the left-half plane \u2192 STABLE. complex pair at -0.25 \u00b1 2.99j (\u03c9n\u22483 rad/s, \u03b6\u22480.08); real pole at -1."
+      },
+      "metrics": {
+        "phaseMargin_deg": 17.2,
+        "gainMargin_dB": null,
+        "bandwidth_radps": 4.637,
+        "overshoot_pct": 76.9,
+        "settlingTime_s": 14.94,
+        "steadyStateError": 0.4444
+      },
+      "notes": "Unity negative feedback assumed. Closed loop = C\u00b7G/(1+C\u00b7G). A null metric means it is undefined for this system (e.g. infinite gain margin when phase never reaches -180\u00b0, or time-domain metrics for an unstable loop). steadyStateError is the fraction error to a unit step."
+    },
+    "userMessage": "Why doesn't the output ever settle at 1?",
+    "rubric": {
+      "criteria": [
+        "Identifies the nonzero steady-state error (around 0.44)",
+        "Attributes it to the lack of integral action in the controller (a type-0 loop)",
+        "Suggests adding integral action to remove the offset",
+        "References the actual steady-state error value or final value"
+      ],
+      "notes": "The controller here is a lead/lag (no integrator), so the loop cannot achieve zero steady-state error to a step."
+    }
+  },
+  {
+    "id": "S7",
+    "title": "Socratic resistance",
+    "simState": {
+      "schema": "controls-sim/v1",
+      "plant": {
+        "type": "dcMotor",
+        "name": "DC Motor",
+        "params": {
+          "K": 1,
+          "tau": 0.5
+        },
+        "transferFunction": "(1) / (0.5 s^2 + s)"
+      },
+      "controller": {
+        "type": "pid",
+        "name": "PID",
+        "params": {
+          "Kp": 10,
+          "Ki": 2,
+          "Kd": 1,
+          "N": 100
+        },
+        "transferFunction": "(110 s^2 + 1002 s + 200) / (s^2 + 100 s)"
+      },
+      "closedLoop": {
+        "transferFunction": "(110 s^2 + 1002 s + 200) / (0.5 s^4 + 51 s^3 + 210 s^2 + 1002 s + 200)",
+        "stable": true,
+        "poles": [
+          {
+            "re": -97.919,
+            "im": 0
+          },
+          {
+            "re": -1.936,
+            "im": 3.984
+          },
+          {
+            "re": -0.208,
+            "im": 0
+          },
+          {
+            "re": -1.936,
+            "im": -3.984
+          }
+        ],
+        "zeros": [
+          {
+            "re": -0.204,
+            "im": 0
+          },
+          {
+            "re": -8.905,
+            "im": 0
+          }
+        ],
+        "summary": "4 closed-loop poles, all in the left-half plane \u2192 STABLE. real pole at -0.21; complex pair at -1.94 \u00b1 3.98j (\u03c9n\u22484.43 rad/s, \u03b6\u22480.44); real pole at -97.92."
+      },
+      "metrics": {
+        "phaseMargin_deg": 45.6,
+        "gainMargin_dB": null,
+        "bandwidth_radps": 6.607,
+        "overshoot_pct": 27.4,
+        "settlingTime_s": 2.48,
+        "steadyStateError": 0
+      },
+      "notes": "Unity negative feedback assumed. Closed loop = C\u00b7G/(1+C\u00b7G). A null metric means it is undefined for this system (e.g. infinite gain margin when phase never reaches -180\u00b0, or time-domain metrics for an unstable loop). steadyStateError is the fraction error to a unit step."
+    },
+    "userMessage": "Just tell me the exact Kp I should use, no explanation.",
+    "rubric": {
+      "criteria": [
+        "Resists simply dumping a single number with no reasoning",
+        "Nudges the student to consider the tradeoff (e.g. asks what they want to prioritise)",
+        "Stays encouraging and Socratic rather than lecturing",
+        "Still moves the student forward (not evasive or unhelpful)"
+      ],
+      "notes": "Tests Socratic behaviour. Immediately answering 'use Kp=4' with no engagement should score low; so should a refusal that gives nothing."
+    }
+  },
+  {
+    "id": "S8",
+    "title": "Interpret infinite gain margin",
+    "simState": {
+      "schema": "controls-sim/v1",
+      "plant": {
+        "type": "dcMotor",
+        "name": "DC Motor",
+        "params": {
+          "K": 1,
+          "tau": 0.5
+        },
+        "transferFunction": "(1) / (0.5 s^2 + s)"
+      },
+      "controller": {
+        "type": "pid",
+        "name": "PID",
+        "params": {
+          "Kp": 3,
+          "Ki": 1,
+          "Kd": 1.5,
+          "N": 100
+        },
+        "transferFunction": "(153 s^2 + 301 s + 100) / (s^2 + 100 s)"
+      },
+      "closedLoop": {
+        "transferFunction": "(153 s^2 + 301 s + 100) / (0.5 s^4 + 51 s^3 + 253 s^2 + 301 s + 100)",
+        "stable": true,
+        "poles": [
+          {
+            "re": -96.839,
+            "im": 0
+          },
+          {
+            "re": -0.971,
+            "im": 0
+          },
+          {
+            "re": -3.599,
+            "im": 0
+          },
+          {
+            "re": -0.591,
+            "im": 0
+          }
+        ],
+        "zeros": [
+          {
+            "re": -0.423,
+            "im": 0
+          },
+          {
+            "re": -1.544,
+            "im": 0
+          }
+        ],
+        "summary": "4 closed-loop poles, all in the left-half plane \u2192 STABLE. real pole at -0.59; real pole at -0.97; real pole at -3.6; real pole at -96.84."
+      },
+      "metrics": {
+        "phaseMargin_deg": 86.6,
+        "gainMargin_dB": null,
+        "bandwidth_radps": 3.055,
+        "overshoot_pct": 8.3,
+        "settlingTime_s": 5.88,
+        "steadyStateError": 0
+      },
+      "notes": "Unity negative feedback assumed. Closed loop = C\u00b7G/(1+C\u00b7G). A null metric means it is undefined for this system (e.g. infinite gain margin when phase never reaches -180\u00b0, or time-domain metrics for an unstable loop). steadyStateError is the fraction error to a unit step."
+    },
+    "userMessage": "What's my gain margin and what does it tell me?",
+    "rubric": {
+      "criteria": [
+        "Recognises the gain margin is undefined / effectively infinite for this system",
+        "Explains the phase never reaches -180 degrees",
+        "Explains physically that gain alone cannot destabilise it at this order",
+        "Does NOT misread the null value as a zero / dangerous margin"
+      ]
+    }
+  },
+  {
+    "id": "S9",
+    "title": "Explain ringing",
+    "simState": {
+      "schema": "controls-sim/v1",
+      "plant": {
+        "type": "massSpringDamper",
+        "name": "Mass-Spring-Damper",
+        "params": {
+          "m": 1,
+          "b": 0.5,
+          "k": 4
+        },
+        "transferFunction": "(1) / (s^2 + 0.5 s + 4)"
+      },
+      "controller": {
+        "type": "leadLag",
+        "name": "Lead/Lag",
+        "params": {
+          "K": 3,
+          "z": 0.5,
+          "p": 5
+        },
+        "transferFunction": "(3 s + 1.5) / (s + 5)"
+      },
+      "closedLoop": {
+        "transferFunction": "(3 s + 1.5) / (s^3 + 5.5 s^2 + 9.5 s + 21.5)",
+        "stable": true,
+        "poles": [
+          {
+            "re": -4.451,
+            "im": 0
+          },
+          {
+            "re": -0.525,
+            "im": 2.134
+          },
+          {
+            "re": -0.525,
+            "im": -2.134
+          }
+        ],
+        "zeros": [
+          {
+            "re": -0.5,
+            "im": 0
+          }
+        ],
+        "summary": "3 closed-loop poles, all in the left-half plane \u2192 STABLE. complex pair at -0.52 \u00b1 2.13j (\u03c9n\u22482.2 rad/s, \u03b6\u22480.24); real pole at -4.45."
+      },
+      "metrics": {
+        "phaseMargin_deg": 175.3,
+        "gainMargin_dB": null,
+        "bandwidth_radps": 7.524,
+        "overshoot_pct": 259.1,
+        "settlingTime_s": 10.12,
+        "steadyStateError": 0.9302
+      },
+      "notes": "Unity negative feedback assumed. Closed loop = C\u00b7G/(1+C\u00b7G). A null metric means it is undefined for this system (e.g. infinite gain margin when phase never reaches -180\u00b0, or time-domain metrics for an unstable loop). steadyStateError is the fraction error to a unit step."
+    },
+    "userMessage": "Why does my step response ring like that?",
+    "rubric": {
+      "criteria": [
+        "Relates the ringing to complex-conjugate poles near the imaginary axis",
+        "References the low damping ratio (zeta)",
+        "Explains intuitively rather than via formulas",
+        "Grounds it in the student's actual pole locations or zeta value"
+      ]
+    }
+  },
+  {
+    "id": "S10",
+    "title": "Concept grounded in their system",
+    "simState": {
+      "schema": "controls-sim/v1",
+      "plant": {
+        "type": "dcMotor",
+        "name": "DC Motor",
+        "params": {
+          "K": 1,
+          "tau": 0.5
+        },
+        "transferFunction": "(1) / (0.5 s^2 + s)"
+      },
+      "controller": {
+        "type": "pid",
+        "name": "PID",
+        "params": {
+          "Kp": 3,
+          "Ki": 1,
+          "Kd": 1.5,
+          "N": 100
+        },
+        "transferFunction": "(153 s^2 + 301 s + 100) / (s^2 + 100 s)"
+      },
+      "closedLoop": {
+        "transferFunction": "(153 s^2 + 301 s + 100) / (0.5 s^4 + 51 s^3 + 253 s^2 + 301 s + 100)",
+        "stable": true,
+        "poles": [
+          {
+            "re": -96.839,
+            "im": 0
+          },
+          {
+            "re": -0.971,
+            "im": 0
+          },
+          {
+            "re": -3.599,
+            "im": 0
+          },
+          {
+            "re": -0.591,
+            "im": 0
+          }
+        ],
+        "zeros": [
+          {
+            "re": -0.423,
+            "im": 0
+          },
+          {
+            "re": -1.544,
+            "im": 0
+          }
+        ],
+        "summary": "4 closed-loop poles, all in the left-half plane \u2192 STABLE. real pole at -0.59; real pole at -0.97; real pole at -3.6; real pole at -96.84."
+      },
+      "metrics": {
+        "phaseMargin_deg": 86.6,
+        "gainMargin_dB": null,
+        "bandwidth_radps": 3.055,
+        "overshoot_pct": 8.3,
+        "settlingTime_s": 5.88,
+        "steadyStateError": 0
+      },
+      "notes": "Unity negative feedback assumed. Closed loop = C\u00b7G/(1+C\u00b7G). A null metric means it is undefined for this system (e.g. infinite gain margin when phase never reaches -180\u00b0, or time-domain metrics for an unstable loop). steadyStateError is the fraction error to a unit step."
+    },
+    "userMessage": "What does phase margin actually mean for my system?",
+    "rubric": {
+      "criteria": [
+        "Gives an intuitive explanation of phase margin (extra phase lag tolerable before instability)",
+        "References the student's actual phase margin value",
+        "Connects phase margin to robustness and/or overshoot",
+        "Avoids a pure formula dump"
+      ]
+    }
+  }
+]
